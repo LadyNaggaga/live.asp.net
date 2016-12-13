@@ -2,8 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Security.Claims;
-using live.asp.net.Formatters;
-using live.asp.net.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using live.asp.net.Formatters;
+using live.asp.net.Services;
 
 namespace live.asp.net
 {
@@ -94,6 +94,11 @@ namespace live.asp.net
 
             cachedWebRoot.PrimeCache();
             app.UseStaticFiles(new StaticFileOptions { FileProvider = cachedWebRoot });
+
+            app.UseRewriter(new RewriteOptions()
+                .AddIISUrlRewrite(env.ContentRootFileProvider, "urlRewrite.config"));
+
+            app.UseStaticFiles();
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
